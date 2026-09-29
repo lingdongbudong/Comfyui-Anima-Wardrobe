@@ -1,0 +1,380 @@
+{
+  "AnimaWardrobeStudio": {
+    "display_name": "Anima 角色造型台（服装 / 姿势 / 表情 / 场景）",
+    "description": "保留角色选择，新增服装 / 姿势 / 表情 / 场景四个槽；带三排一键按钮（一键服装 / 一键场景 / 一键随机搭配 / 一键姿势 / 一键表情 / 随机角色 ×1 ×2）。抽取等级直接对应 NSFW 五级标度 0-4。一键表情会随当前姿势、服装自动匹配（害羞 / 高潮 / 失神 / 抗拒…）。识别到两位女性角色时自动配关系标签。默认不覆盖上游插件已写入的粘性槽。",
+    "inputs": {
+      "character_tags": {
+        "name": "角色标签",
+        "tooltip": "角色槽。建议交给上游的「Anima 角色 Tag 选择器」，也可用「随机角色」按钮填充。"
+      },
+      "clothing_tags": {
+        "name": "服装标签",
+        "tooltip": "服装槽（粘性槽：写入后其他插件不得覆盖）。用「一键服装」抽取或打开预设面板点选。"
+      },
+      "pose_tags": {
+        "name": "姿势标签",
+        "tooltip": "姿势槽（粘性槽）。打开预设面板从姿势库里点选。"
+      },
+      "scene_tags": {
+        "name": "场景标签",
+        "tooltip": "场景槽（粘性槽）。用「一键场景」抽取或打开预设面板点选。"
+      },
+      "clothing_policy": {
+        "name": "服装·覆盖策略",
+        "tooltip": "respect = 上游插件已写的服装优先，本节点不覆盖（默认）；override = 本节点显式提权，强制胜出。",
+        "values": {
+          "respect": "尊重上游（不覆盖）",
+          "override": "本节点提权覆盖"
+        }
+      },
+      "pose_policy": {
+        "name": "姿势·覆盖策略",
+        "tooltip": "同服装槽。",
+        "values": {
+          "respect": "尊重上游（不覆盖）",
+          "override": "本节点提权覆盖"
+        }
+      },
+      "scene_policy": {
+        "name": "场景·覆盖策略",
+        "tooltip": "同服装槽。",
+        "values": {
+          "respect": "尊重上游（不覆盖）",
+          "override": "本节点提权覆盖"
+        }
+      },
+      "character_feature_policy": {
+        "name": "角色特征·保护开关",
+        "tooltip": "override = 角色特征随角色整体替换（默认，换角色即换发色瞳色）；protect = 锁住上游的角色特征，不让下游改写。",
+        "values": {
+          "override": "随角色替换（默认）",
+          "protect": "锁定上游特征"
+        }
+      },
+      "order_mode": {
+        "name": "输出排序",
+        "tooltip": "preserve = 不打乱原有词序，只删被遮挡的标签（默认）；normalize = 按规范槽位顺序重排。",
+        "values": {
+          "preserve": "保持原词序",
+          "normalize": "按槽位顺序重排"
+        }
+      },
+      "roll_level": {
+        "name": "一键抽取等级",
+        "tooltip": "一键按钮抽什么级别，直接对应 NSFW 五级标度（0-4）。选 extreme 会额外抽出群体/极端扩张/拘束装置/极限体液等第 5 级内容。",
+        "values": {
+          "sfw": "0 · 全年龄",
+          "suggestive": "1 · 擦边（默认）",
+          "explicit": "2 · 成人",
+          "hardcore": "3 · 过激",
+          "extreme": "4 · 极端（新增）",
+          "any": "不限"
+        }
+      },
+      "allow_public": {
+        "name": "允许公共场所高暴露",
+        "tooltip": "打开后，公共交通 / 教室等公共、半公开场所也允许搭配暴露度更高的服装（露出玩法）。"
+      },
+      "opt_prompt": {
+        "name": "上游文本",
+        "tooltip": "可选。接上游任意插件的提示词文本。"
+      },
+      "upstream_wardrobe": {
+        "name": "上游造型声明",
+        "tooltip": "可选。接上游本插件的结构化声明，优先级高于纯文本。"
+      },
+      "expression_tags": {
+        "name": "表情标签",
+        "tooltip": "表情槽（粘性槽）。用「一键表情」自动匹配，或打开预设面板从表情库里点选。"
+      },
+      "expression_policy": {
+        "name": "表情·覆盖策略",
+        "tooltip": "同服装槽。",
+        "values": {
+          "respect": "尊重上游（不覆盖）",
+          "override": "本节点提权覆盖"
+        }
+      },
+      "huge_breasts": {
+        "name": "巨乳开关",
+        "tooltip": "开启后，「随机角色」抽出的角色体型强制改为巨乳（huge breasts），替换掉原本的贫乳 / 中乳 / 大胸等体型词。"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "文本"
+      },
+      "1": {
+        "name": "造型声明"
+      }
+    }
+  },
+  "AnimaRandomGirl": {
+    "display_name": "Anima 随机女性角色（含官方标签特征）",
+    "description": "从女性角色池里随机抽 1~3 个，连官方 trigger 与特征标签一起输出。按同人作品数加权（热门更容易抽到），默认避开最近抽过的角色。抽到 2 位及以上时按抽取等级自动补关系标签（0/1 正常互动、2/3 百合、4 极端百合）。角色标签归入角色槽，不占用服装槽。",
+    "inputs": {
+      "pool": {
+        "name": "抽取池",
+        "tooltip": "热门 TOP200 / TOP1000 / 全部女性 / 按作品 / 按发色 / 按瞳色。",
+        "values": {
+          "热门 TOP200": "热门 TOP200",
+          "热门 TOP1000": "热门 TOP1000",
+          "全部女性": "全部女性（5981）",
+          "按作品": "按作品筛选",
+          "按发色": "按发色筛选",
+          "按瞳色": "按瞳色筛选"
+        }
+      },
+      "keyword": {
+        "name": "筛选关键词",
+        "tooltip": "池选「按作品 / 按发色 / 按瞳色」时生效。例：genshin、white、blue。留空则该池不生效。"
+      },
+      "min_post_count": {
+        "name": "最低同人作品数",
+        "tooltip": "过滤掉太冷门的角色。0 = 不过滤。"
+      },
+      "character_count": {
+        "name": "抽取数量",
+        "tooltip": "1~3 个。抽多个时会合并成一组标签，人数词自动变成 2girls / 3girls，并触发双女性关系标签。"
+      },
+      "include_features": {
+        "name": "附带官方特征标签",
+        "tooltip": "打开时输出角色官方特征（发色 / 瞳色 / 发型等）；关闭则只输出角色名与作品名。"
+      },
+      "avoid_repeat": {
+        "name": "避免重复",
+        "tooltip": "打开时避开最近 40 次抽过的角色（候选不足时才允许重复）。"
+      },
+      "seed": {
+        "name": "随机种子",
+        "tooltip": "-1 = 每次随机；固定值可复现同一角色。"
+      },
+      "order_mode": {
+        "name": "输出排序",
+        "tooltip": "preserve = 不打乱原有词序；normalize = 按规范槽位顺序重排。",
+        "values": {
+          "preserve": "保持原词序",
+          "normalize": "按槽位顺序重排"
+        }
+      },
+      "opt_prompt": {
+        "name": "上游文本",
+        "tooltip": "可选。接上游任意插件的提示词文本。"
+      },
+      "upstream_wardrobe": {
+        "name": "上游造型声明",
+        "tooltip": "可选。接上游本插件的结构化声明。"
+      },
+      "level": {
+        "name": "抽取等级",
+        "tooltip": "决定双女性时配什么关系标签：0/1 级 → 正常互动；2/3 级 → 百合；4 级 → 极端百合。",
+        "values": {
+          "sfw": "0 · 全年龄",
+          "suggestive": "1 · 擦边（默认）",
+          "explicit": "2 · 成人",
+          "hardcore": "3 · 过激",
+          "extreme": "4 · 极端（新增）",
+          "any": "不限"
+        }
+      },
+      "relation": {
+        "name": "双女关系标签",
+        "tooltip": "抽到 2 位及以上女性角色时是否自动补关系标签。「百合向」= 至少百合但不主动升到第 5 级。",
+        "values": {
+          "自动（按等级）": "自动（按等级）",
+          "正常互动": "强制正常互动",
+          "百合向": "强制百合向",
+          "不加": "不加"
+        }
+      },
+      "huge_breasts": {
+        "name": "巨乳开关",
+        "tooltip": "开启后随机抽出的角色体型强制改为巨乳（huge breasts），替换掉原本的贫乳 / 中乳 / 大胸等体型词。"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "文本"
+      },
+      "1": {
+        "name": "造型声明"
+      },
+      "2": {
+        "name": "抽取报告"
+      }
+    }
+  },
+  "AnimaNSFWGrader": {
+    "display_name": "Anima NSFW 分级判定（0-3 级 + 内容分类）",
+    "description": "判定成人裸露向等级：0 全年龄 / 1 擦边 / 2 成人 / 3 过激，并列出具体属于哪类内容（裸露、透视湿身、半脱掀起、裁剪镂空、性行为、性道具、束缚BDSM、体液事后、暴露癖、轻度暗示）。可选用上限过滤掉超标标签。",
+    "inputs": {
+      "mode": {
+        "name": "处理方式",
+        "tooltip": "只报告 = 不改文本；过滤超标标签 = 把超过等级上限的标签从文本里剔除。",
+        "values": {
+          "只报告": "只报告（不改文本）",
+          "过滤超标标签": "过滤超标标签"
+        }
+      },
+      "max_level": {
+        "name": "等级上限",
+        "tooltip": "「过滤超标标签」模式下，超过该等级的标签会被剔掉。",
+        "values": {
+          "extreme": "4 · 极端（新增）",
+          "hardcore": "3 · 过激",
+          "explicit": "2 · 成人",
+          "suggestive": "1 · 擦边（默认）",
+          "sfw": "0 · 全年龄"
+        }
+      },
+      "text": {
+        "name": "待判定文本",
+        "tooltip": "可选。接要判定的提示词文本。"
+      },
+      "wardrobe": {
+        "name": "待判定声明",
+        "tooltip": "可选。接本插件的造型声明，文本为空时用它判定。"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "文本"
+      },
+      "1": {
+        "name": "等级名"
+      },
+      "2": {
+        "name": "等级数字"
+      },
+      "3": {
+        "name": "判定报告"
+      }
+    }
+  },
+  "AnimaWardrobeRoll": {
+    "display_name": "Anima 一键随机搭配（每次运行重抽）",
+    "description": "服务端版随机搭配：每次运行工作流自动抽一套搭配合理的服装 + 姿势 + 表情 + 场景 + 关系标签，并给出 NSFW 等级（0-4）。表情会随姿势自动匹配。seed 固定可复现。结果按插件层写入，会压过正文里的散落标签，但不覆盖上游插件已写的粘性槽。",
+    "inputs": {
+      "enable_outfit": {
+        "name": "启用随机服装",
+        "tooltip": "关闭则本次不抽服装。"
+      },
+      "enable_scene": {
+        "name": "启用随机场景",
+        "tooltip": "关闭则本次不抽场景。"
+      },
+      "level": {
+        "name": "抽取等级",
+        "tooltip": "抽什么级别，直接对应 NSFW 五级标度（0-4）。extreme 档会带上第 5 级专属的行为/装置/体液标签。opt_prompt 里若有两位女性角色，会自动按等级补关系标签。",
+        "values": {
+          "sfw": "0 · 全年龄",
+          "suggestive": "1 · 擦边（默认）",
+          "explicit": "2 · 成人",
+          "hardcore": "3 · 过激",
+          "extreme": "4 · 极端（新增）",
+          "any": "不限"
+        }
+      },
+      "allow_public": {
+        "name": "允许公共场所高暴露",
+        "tooltip": "打开后公共、半公开场所也允许搭配高暴露服装。"
+      },
+      "seed": {
+        "name": "随机种子",
+        "tooltip": "-1 = 每次运行随机；固定值可复现。注意改任何参数都会改变抽取路径。"
+      },
+      "order_mode": {
+        "name": "输出排序",
+        "tooltip": "preserve = 不打乱原有词序；normalize = 按规范槽位顺序重排。",
+        "values": {
+          "preserve": "保持原词序",
+          "normalize": "按槽位顺序重排"
+        }
+      },
+      "opt_prompt": {
+        "name": "上游文本",
+        "tooltip": "可选。接上游任意插件的提示词文本。"
+      },
+      "upstream_wardrobe": {
+        "name": "上游造型声明",
+        "tooltip": "可选。接上游本插件的结构化声明。"
+      },
+      "enable_pose": {
+        "name": "启用随机姿势",
+        "tooltip": "关闭则本次不抽姿势。姿势按等级分层：SFW 档只出日常姿势，高等级才出性行为姿势。"
+      },
+      "enable_expression": {
+        "name": "启用随机表情",
+        "tooltip": "关闭则本次不抽表情。表情随当前姿势、服装、关系自动匹配。"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "文本"
+      },
+      "1": {
+        "name": "造型声明"
+      },
+      "2": {
+        "name": "抽取报告"
+      }
+    }
+  },
+  "AnimaTagArbiter": {
+    "display_name": "Anima 标签仲裁器（防覆盖）",
+    "description": "汇总最多 4 路来源（本插件的结构化声明 / 任意插件的裸文本），按槽位契约裁决冲突后输出。放在链路末端即可保护上游所有插件：服装、姿势、场景、画师先写锁定；角色特征不受保护。",
+    "inputs": {
+      "order_mode": {
+        "name": "输出排序",
+        "tooltip": "preserve = 不打乱原有词序，只删被遮挡的标签（默认）；normalize = 按规范槽位顺序重排。",
+        "values": {
+          "preserve": "保持原词序",
+          "normalize": "按槽位顺序重排"
+        }
+      },
+      "strict_shadow": {
+        "name": "严格遮挡",
+        "tooltip": "打开时被遮挡的标签一律丢弃；关闭时每槽保留一个兜底。"
+      },
+      "source_1": {
+        "name": "来源 1",
+        "tooltip": "可接本插件的造型声明，或任意插件的文本。"
+      },
+      "source_2": {
+        "name": "来源 2",
+        "tooltip": "同上。"
+      },
+      "source_3": {
+        "name": "来源 3",
+        "tooltip": "同上。"
+      },
+      "source_4": {
+        "name": "来源 4",
+        "tooltip": "同上。"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "文本"
+      },
+      "1": {
+        "name": "合并声明"
+      }
+    }
+  },
+  "AnimaWardrobeInspect": {
+    "display_name": "Anima 槽位归属检查器",
+    "description": "只读检查工具：把输入文本的每个标签判到哪个槽位打出来，用于排查「为什么这个标签没被保护 / 为什么被遮挡了」。不修改任何内容。",
+    "inputs": {
+      "text": {
+        "name": "待检查文本",
+        "tooltip": "可选。要检查的提示词文本。"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "检查报告"
+      }
+    }
+  }
+}

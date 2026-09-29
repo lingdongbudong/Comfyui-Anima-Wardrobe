@@ -1,0 +1,35 @@
+[project]
+name = "comfyui-anima-wardrobe"
+version = "2.0.0"
+description = "Anima character styling console and cross-plugin tag arbiter for ComfyUI: slot contract for clothing / pose / expression / scene, 0-4 NSFW tiering, weighted random outfit rolling, and random casting from a 5981-character pool"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "lingdongbudong" }
+]
+keywords = [
+    "comfyui",
+    "anime",
+    "prompt",
+    "tag-arbiter",
+    "wardrobe",
+    "outfit",
+    "danbooru",
+    "nsfw-grading",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/lingdongbudong/Comfyui-Anima-Wardrobe"
+
+[tool.comfy]
+PublisherId = "lingdongbudong"
+DisplayName = "Anima-Wardrobe"
+Icon = ""
+Banner = ""

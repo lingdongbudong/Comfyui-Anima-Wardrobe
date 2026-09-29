@@ -1,0 +1,21 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE & Editor configs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS temporary files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Runtime state written by the studio panel (per-user, never commit)
+presets/.recent_girls.json
